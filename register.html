@@ -1,3 +1,4 @@
+<!-- HTML: register.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -74,169 +75,132 @@
     .popup {
       display: none;
       position: fixed;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      border: 2px solid #4ab3e4;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
       z-index: 999;
+      justify-content: center;
+      align-items: center;
     }
-    .popup.active {
-      display: block;
+    .popup-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <h1>ลงทะเบียนผู้ใช้งาน</h1>
-  <form id="register-form">
-    <input type="hidden" name="user_id" />
-    <!-- Step 1 -->
-    <div class="form-section active" id="step-1">
-      <label>คำนำหน้า *</label>
-      <select name="prefix" required>
-        <option value="">เลือก</option>
-        <option value="น.ส.">น.ส.</option>
-        <option value="นาง">นาง</option>
-        <option value="นาย">นาย</option>
-        <option value="ด.ญ.">ด.ญ.</option>
-        <option value="ด.ช.">ด.ช.</option>
-        <option value="อื่นๆ">อื่นๆ</option>
-      </select>
-      <label>ชื่อ *</label>
-      <input name="first_name" required />
-      <label>นามสกุล *</label>
-      <input name="last_name" required />
-      <label>วันเดือนปีเกิด *</label>
-      <input type="date" name="birthdate" required />
-      <label>เลขบัตรประชาชน *</label>
-      <input name="cid" maxlength="13" pattern="\d{13}" placeholder="กรอกเลข 13 หลัก" required />
-      <label>เพศ</label>
-      <select name="gender">
-        <option value="">เลือก</option>
-        <option value="หญิง">หญิง</option>
-        <option value="ชาย">ชาย</option>
-        <option value="อื่นๆ">อื่นๆ</option>
-      </select>
-      <label>เบอร์โทรศัพท์ *</label>
-      <input name="phone" maxlength="10" pattern="\d{10}" placeholder="กรอกเบอร์ 10 หลัก" required />
-      <label>บ้านเลขที่</label>
-      <input name="address_no" />
-      <label>หมู่</label>
-      <input name="address_moo" />
-      <label>ตำบล</label>
-      <input name="address_tambon" />
-      <label>อำเภอ</label>
-      <input name="address_amphur" />
-      <label>จังหวัด</label>
-      <input name="address_province" />
-      <label>สถานะ</label>
-      <div class="checkbox-group">
-        <label><input type="checkbox" name="is_pregnant" value="TRUE"> หญิงตั้งครรภ์</label>
-        <label><input type="checkbox" name="is_postpartum" value="TRUE"> หญิงหลังคลอด</label>
-        <label><input type="checkbox" name="is_general_user" value="TRUE"> บุคคลทั่วไป</label>
-      </div>
-      <label>ความสัมพันธ์ (ถ้าเป็นบุคคลทั่วไป)</label>
-      <select name="related_to_mother_type">
-        <option value="">เลือก</option>
-        <option value="self">ตนเอง</option>
-        <option value="partner">แฟน</option>
-        <option value="husband">สามี</option>
-        <option value="family">ญาติ</option>
-        <option value="friend">เพื่อน</option>
-        <option value="staff">เจ้าหน้าที่</option>
-        <option value="other">อื่น ๆ</option>
-      </select>
-      <button type="button" onclick="nextStep()">ถัดไป</button>
-    </div>
-
-    <!-- Step 2 -->
-    <div class="form-section" id="step-2">
-      <p>
-        <strong>นโยบายความเป็นส่วนตัว</strong><br>
-        ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการให้บริการด้านสุขภาพแม่และเด็ก...
-      </p>
-      <label><input type="checkbox" id="consent-box"/> ข้าพเจ้ายินยอมตามเงื่อนไข</label>
-      <button type="submit" id="submit-btn" disabled>ลงทะเบียน</button>
-    </div>
-    <div class="loading" id="loading">กำลังบันทึกข้อมูล...</div>
+  <div id="loading" class="loading"><div class="spinner"></div><p>กำลังโหลดข้อมูล...</p></div>
+  <form id="register-form" style="display:none">
+    <!-- Form Steps จะถูกเพิ่มด้วย JavaScript -->
   </form>
-  <div class="popup" id="popup"></div>
+
+  <div class="popup" id="popup">
+    <div class="popup-content" id="popup-content">
+      <!-- Message here -->
+    </div>
+  </div>
 
   <script>
-    let currentStep = 1;
-    function nextStep() {
-      document.getElementById("step-1").classList.remove("active");
-      document.getElementById("step-2").classList.add("active");
-    }
-    document.getElementById("consent-box").addEventListener("change", function() {
-      document.getElementById("submit-btn").disabled = !this.checked;
-    });
+    let lineUserId = "";
 
-    let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
-    liff.init({ liffId: "2007700107-rDd1AD1M" }).then(() => {
+    async function initApp() {
+      await liff.init({ liffId: "2007700107-rDd1AD1M" });
       if (!liff.isLoggedIn()) liff.login();
-      else return liff.getProfile();
-    }).then(profile => {
+      const profile = await liff.getProfile();
       lineUserId = profile.userId;
-      lineDisplayName = profile.displayName;
-      linePictureUrl = profile.pictureUrl;
+      const response = await fetch(`https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`);
+      const user = await response.json();
 
-      // ดึงข้อมูลจาก Apps Script เพื่อตรวจสอบว่ามีข้อมูลเดิมไหม
-      return fetch(`https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?check_user=true&line_user_id=${lineUserId}`);
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.user_id) {
-        document.querySelector('[name="user_id"]').value = data.user_id;
-        document.querySelector('[name="prefix"]').value = data.prefix || "";
-        document.querySelector('[name="first_name"]').value = data.first_name || "";
-        document.querySelector('[name="last_name"]').value = data.last_name || "";
-        document.querySelector('[name="birthdate"]').value = data.birthdate || "";
-        document.querySelector('[name="cid"]').value = data.cid || "";
-        document.querySelector('[name="gender"]').value = data.gender || "";
-        document.querySelector('[name="phone"]').value = data.phone || "";
-        document.querySelector('[name="address_no"]').value = data.address_no || "";
-        document.querySelector('[name="address_moo"]').value = data.address_moo || "";
-        document.querySelector('[name="address_tambon"]').value = data.address_tambon || "";
-        document.querySelector('[name="address_amphur"]').value = data.address_amphur || "";
-        document.querySelector('[name="address_province"]').value = data.address_province || "";
-        document.querySelector('[name="related_to_mother_type"]').value = data.related_to_mother_type || "";
-        document.querySelector('[name="is_pregnant"]').checked = data.is_pregnant === "TRUE";
-        document.querySelector('[name="is_postpartum"]').checked = data.is_postpartum === "TRUE";
-        document.querySelector('[name="is_general_user"]').checked = data.is_general_user === "TRUE";
+      document.getElementById("loading").style.display = "none";
+
+      if (user && user.cid) {
+        const form = document.getElementById("register-form");
+        form.innerHTML = `
+          <p>สวัสดีคุณ ${user.first_name}</p>
+          <p>คุณได้ลงทะเบียนเรียบร้อยแล้ว</p>
+          <p>ชื่อ: ${user.prefix}${user.first_name} ${user.last_name}</p>
+          <p>วันเกิด: ${user.birthdate}</p>
+          <p>เลขบัตร: ${user.cid}</p>
+          <p>ที่อยู่: ${user.address_no} ม.${user.address_moo} ต.${user.address_tambon} อ.${user.address_amphur} จ.${user.address_province}</p>
+          <p>เบอร์โทร: ${user.phone}</p>
+          <p>สถานะ: ${user.is_pregnant ? 'หญิงตั้งครรภ์' : user.is_postpartum ? 'แม่หลังคลอด' : 'บุคคลทั่วไป'}</p>
+          <button onclick="showEditForm(user)">แก้ไข</button>
+        `;
+        form.style.display = "block";
+      } else {
+        showFormStep1();
       }
-    });
+    }
 
-    document.getElementById("register-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const form = new FormData(e.target);
-      form.append("line_user_id", lineUserId);
-      form.append("line_display_name", lineDisplayName);
-      form.append("line_picture_url", linePictureUrl);
-      form.append("line_registered_at", new Date().toISOString());
+    function showFormStep1() {
+      const form = document.getElementById("register-form");
+      form.style.display = "block";
+      form.innerHTML = `
+        <div class="form-section active" id="step-1">
+          <label>ชื่อ *</label><input name="first_name" required />
+          <label>นามสกุล *</label><input name="last_name" required />
+          <label>เบอร์โทร *</label><input name="phone" required />
+          <button type="button" onclick="showConsentStep()">ถัดไป</button>
+        </div>
+      `;
+    }
 
+    function showConsentStep() {
+      const form = document.getElementById("register-form");
+      form.innerHTML = `
+        <div class="form-section active" id="step-2">
+          <p><strong>นโยบายความเป็นส่วนตัว</strong><br>ข้าพเจ้ายินยอมให้...</p>
+          <label><input type="checkbox" id="consent-box"/> ข้าพเจ้ายินยอมตามเงื่อนไข</label>
+          <button id="submit-btn" disabled onclick="submitForm()">ลงทะเบียน</button>
+        </div>
+      `;
+      document.getElementById("consent-box").addEventListener("change", function() {
+        document.getElementById("submit-btn").disabled = !this.checked;
+      });
+    }
+
+    function submitForm() {
+      const formData = new FormData(document.querySelector("#register-form"));
+      formData.append("line_user_id", lineUserId);
+      formData.append("line_registered_at", new Date().toISOString());
       document.getElementById("loading").classList.add("active");
 
       fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
         method: "POST",
-        body: form
-      })
-      .then(res => res.json())
-      .then(data => {
+        body: formData
+      }).then(r => r.json()).then(data => {
         document.getElementById("loading").classList.remove("active");
         const popup = document.getElementById("popup");
-        let message = "<h3>🏥 ระบบลงทะเบียน MCH Yaha Care Center</h3><p>ลงทะเบียนสำเร็จ</p>";
-        if (data.is_high_risk_pregnancy === true) {
-          message += '<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>';
-        }
-        message += '<br><button onclick="window.location.reload()">ปิด</button>';
-        popup.innerHTML = message;
+        document.getElementById("popup-content").innerHTML = `
+          <h3>🏥 ระบบลงทะเบียน MCH Yaha Care Center</h3>
+          <p>ลงทะเบียนสำเร็จ</p>
+          ${data.is_high_risk_pregnancy ? '<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>' : ''}
+          <button onclick="popup.classList.remove('active')">ปิด</button>
+        `;
         popup.classList.add("active");
       });
-    });
+    }
+
+    initApp();
   </script>
 </body>
 </html>
