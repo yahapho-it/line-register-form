@@ -817,12 +817,25 @@ registrationForm.addEventListener("submit", async function submitForm(event) {
     console.log("✅ Response from server:", result);
     loadingDiv.style.display = "none";
     successMessage.style.display = "block";
-  } catch (error) {
-    console.error("❌ Error:", error);
-    alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
-    registrationForm.style.display = "block";
-    loadingDiv.style.display = "none";
-  }
+  } catch(error => {
+    console.error("Error submitting form:", error);
+
+    let message = "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง";
+
+    // ถ้า error มี response ที่อ่านได้
+    if (error.response) {
+        error.response.json().then(data => {
+            if (data.error) {
+                message += "\nสาเหตุ: " + data.error;
+            }
+            alert(message);
+        });
+    } else {
+        // fallback
+        alert(message + "\n" + error.message);
+    }
+});
+
 });
 </script>
 
