@@ -743,12 +743,21 @@
         }
         
 function getAddressNames() {
-  return {
-    tambon: document.getElementById("tambon").value,
-    amphur: document.getElementById("amphur").value,
-    province: document.getElementById("province").value
-  };
+    const provinceId = document.getElementById('province').value;
+    const amphurId = document.getElementById('amphur').value;
+    const tambonId = document.getElementById('tambon').value;
+
+    const province = addressData.provinces.find(p => p.id == provinceId)?.name_th || '';
+    const amphur = addressData.amphurs.find(a => a.id == amphurId)?.name_th || '';
+    const tambon = addressData.tambons.find(t => t.id == tambonId)?.name_th || '';
+
+    return {
+        province,
+        amphur,
+        tambon
+    };
 }
+
 
 function getSelectedUserTypes() {
   return {
