@@ -805,36 +805,31 @@ registrationForm.addEventListener("submit", async function submitForm(event) {
   loadingDiv.style.display = "block";
 
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+  const response = await fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
 
-    const result = await response.json();
-    console.log("✅ Response from server:", result);
+  const result = await response.json();
+  console.log("✅ Response from server:", result);
+
+  if (result.status === "success") {
     loadingDiv.style.display = "none";
     successMessage.style.display = "block";
-  } catch(error => {
-    console.error("Error submitting form:", error);
+  } else {
+    throw new Error(result.error || "เกิดข้อผิดพลาดจากฝั่งเซิร์ฟเวอร์");
+  }
 
-    let message = "เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง";
+} catch (error) {
+  console.error("❌ Error:", error);
+  alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล\n" + (error.message || "กรุณาลองใหม่อีกครั้ง"));
+  registrationForm.style.display = "block";
+  loadingDiv.style.display = "none";
+}
 
-    // ถ้า error มี response ที่อ่านได้
-    if (error.response) {
-        error.response.json().then(data => {
-            if (data.error) {
-                message += "\nสาเหตุ: " + data.error;
-            }
-            alert(message);
-        });
-    } else {
-        // fallback
-        alert(message + "\n" + error.message);
-    }
-});
 
 </script>
 
