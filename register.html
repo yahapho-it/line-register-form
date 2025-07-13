@@ -334,6 +334,7 @@
         <div class="header">
             <h1>🌸 MCH YAHA Care Center 🌸</h1>
             <div class="subtitle">ระบบลงทะเบียนสำหรับหญิงตั้งครรภ์และหลังคลอด</div>
+            <div id="greeting" style="margin-top: 10px; font-size: 16px; color: #2C3E50;"></div>
         </div>
 
         <div class="form-container">
@@ -538,6 +539,10 @@
                 userProfile = profile;
                 isProfileLoaded = true;
                 console.log('User profile:', profile);
+
+            // ✅ แสดงชื่อในส่วน greeting
+            const greeting = document.getElementById("greeting");
+            greeting.textContent = `👋 สวัสดีคุณ ${profile.displayName}`;
             }).catch((err) => {
                 console.error('Error getting user profile', err);
             });
