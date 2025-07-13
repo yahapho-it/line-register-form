@@ -17,39 +17,82 @@
       text-align: center;
       color: #2176bd;
     }
-    form, .summary-box, .loading {
+    form {
       max-width: 600px;
       margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    label { display: block; margin-top: 12px; font-weight: bold; }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
     input, select {
-      width: 100%; padding: 8px; margin-top: 4px;
-      border-radius: 6px; border: 1px solid #ccc;
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
-    .form-section { display: none; }
-    .form-section.active { display: block; }
+    .form-section {
+      display: none;
+    }
+    .form-section.active {
+      display: block;
+    }
     button {
-      margin-top: 20px; padding: 12px; width: 100%;
-      border: none; background-color: #2176bd;
-      color: white; border-radius: 6px; font-size: 16px; cursor: pointer;
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      background-color: #2176bd;
+      color: white;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
     }
-    button:disabled { background-color: #ccc; cursor: not-allowed; }
-    .checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; }
-    .loading { text-align: center; margin-top: 20px; display: none; }
-    .loading.active { display: block; }
-    .summary-box {
-      background: #fff; border-radius: 12px; padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 30px;
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .checkbox-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .loading.active {
+      display: block;
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border: 2px solid #4ab3e4;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    .popup.active {
+      display: block;
     }
   </style>
 </head>
 <body>
   <h1>ลงทะเบียนผู้ใช้งาน</h1>
-
-  <div class="loading active" id="loading-box">🔄 กำลังโหลดข้อมูล...</div>
-  <div class="summary-box" id="summary-box" style="display:none;"></div>
-
-  <form id="register-form" style="display:none;">
+  <form id="register-form">
+    <!-- Form Step 1 -->
     <div class="form-section active" id="step-1">
       <label>คำนำหน้า *</label>
       <select name="prefix" required>
@@ -108,90 +151,65 @@
       <button type="button" onclick="nextStep()">ถัดไป</button>
     </div>
 
+    <!-- Form Step 2 -->
     <div class="form-section" id="step-2">
       <p>
         <strong>นโยบายความเป็นส่วนตัว</strong><br>
-        ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการให้บริการด้านสุขภาพแม่และเด็ก
+        ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการให้บริการด้านสุขภาพแม่และเด็ก รวมถึงการติดต่อประสานงาน การแจ้งเตือน การให้คำแนะนำ ตลอดจนการประเมินผลการดูแลสุขภาพ โดยข้อมูลจะได้รับการจัดเก็บและคุ้มครองตามกฎหมาย PDPA
       </p>
       <label><input type="checkbox" id="consent-box"/> ข้าพเจ้ายินยอมตามเงื่อนไข</label>
       <button type="submit" id="submit-btn" disabled>ลงทะเบียน</button>
     </div>
-    <div class="loading" id="form-loading">⏳ กำลังบันทึกข้อมูล...</div>
+    <div class="loading" id="loading">กำลังบันทึกข้อมูล...</div>
   </form>
+  <div class="popup" id="popup"></div>
 
   <script>
-    let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
-
+    let currentStep = 1;
     function nextStep() {
       document.getElementById("step-1").classList.remove("active");
       document.getElementById("step-2").classList.add("active");
     }
-
     document.getElementById("consent-box").addEventListener("change", function() {
       document.getElementById("submit-btn").disabled = !this.checked;
     });
 
-    async function init() {
-      await liff.init({ liffId: "1657919462-XkKzkxAl" });
+    let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
+    liff.init({ liffId: "2007700107-rDd1AD1M" }).then(() => {
       if (!liff.isLoggedIn()) liff.login();
-      const profile = await liff.getProfile();
+      else return liff.getProfile();
+    }).then(profile => {
       lineUserId = profile.userId;
       lineDisplayName = profile.displayName;
       linePictureUrl = profile.pictureUrl;
-
-      const url = `https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`;
-      const res = await fetch(url);
-      const data = await res.json();
-
-      document.getElementById("loading-box").style.display = "none";
-
-      if (data && data.cid) {
-        let html = `<p>คุณได้ลงทะเบียนเรียบร้อยแล้ว</p>`;
-        html += `<p><strong>ชื่อ:</strong> ${data.prefix || ''} ${data.first_name || ''} ${data.last_name || ''}</p>`;
-        html += `<p><strong>วันเกิด:</strong> ${data.birthdate || ''}</p>`;
-        html += `<p><strong>เลขบัตร:</strong> ${data.cid || ''}</p>`;
-        html += `<p><strong>ที่อยู่:</strong> ${data.address_tambon || ''} ${data.address_amphur || ''} ${data.address_province || ''}</p>`;
-        html += `<p><strong>เบอร์โทร:</strong> ${data.phone || ''}</p>`;
-        html += `<p><strong>สถานะ:</strong> ${data.is_pregnant ? 'หญิงตั้งครรภ์' : data.is_postpartum ? 'หลังคลอด' : data.is_general_user ? 'บุคคลทั่วไป' : ''}</p>`;
-        document.getElementById("summary-box").innerHTML = html;
-        document.getElementById("summary-box").style.display = "block";
-        document.getElementById("register-form").style.display = "none";
-      } else {
-        document.getElementById("register-form").style.display = "block";
-      }
-    }
+    });
 
     document.getElementById("register-form").addEventListener("submit", function(e) {
       e.preventDefault();
-      const formEl = e.target;
-      const form = new FormData(formEl);
-
-      ["is_pregnant", "is_postpartum", "is_general_user"].forEach(name => {
-        form.delete(name);
-        const el = formEl.querySelector(`[name=${name}]`);
-        if (el && el.checked) {
-          form.append(name, "TRUE");
-        }
-      });
-
+      const form = new FormData(e.target);
       form.append("line_user_id", lineUserId);
       form.append("line_display_name", lineDisplayName);
       form.append("line_picture_url", linePictureUrl);
       form.append("line_registered_at", new Date().toISOString());
 
-      document.getElementById("form-loading").classList.add("active");
+      document.getElementById("loading").classList.add("active");
 
       fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
-        method: "POST", body: form
-      }).then(res => res.json())
+        method: "POST",
+        body: form
+      })
+      .then(res => res.json())
       .then(data => {
-        document.getElementById("form-loading").classList.remove("active");
-        alert("✅ ลงทะเบียนสำเร็จ ขอบคุณที่ใช้บริการ");
-        location.reload();
+        document.getElementById("loading").classList.remove("active");
+        const popup = document.getElementById("popup");
+        let message = "<h3>🏥 ระบบลงทะเบียน MCH Yaha Care Center</h3><p>ลงทะเบียนสำเร็จ</p>";
+        if (data.is_high_risk_pregnancy === true) {
+          message += '<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>';
+        }
+        popup.innerHTML = message;
+        popup.classList.add("active");
       });
     });
-
-    window.addEventListener("load", init);
   </script>
 </body>
 </html>
