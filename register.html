@@ -131,10 +131,29 @@
     <div class="loading" id="form-loading">⏳ กำลังบันทึกข้อมูล...</div>
   </form>
 
-  <div class="popup" id="popup">
-    <div class="popup-content" id="popup-content"></div>
+ <div class="popup" id="popup">
+    <div class="popup-content" id="popup-content">
+      <button onclick="document.getElementById('popup').classList.remove('active')" style="float:right;">✖</button>
+      <!-- เนื้อหา Popup แสดงตอนกด Submit -->
+    </div>
   </div>
 
+
+  <script>
+  window.onload = () => {
+    // ซ่อน popup ถ้ามันแสดงค้างอยู่
+    const popup = document.getElementById("popup");
+    if (popup.classList.contains("active")) {
+      popup.classList.remove("active");
+    }
+
+    // ป้องกันเผื่อมี class แสดง popup-content ก็ซ่อนไปด้วย
+    const popupContent = document.getElementById("popup-content");
+    popupContent.innerHTML = "";
+  };
+</script>
+
+  
   <script>
     let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
 
