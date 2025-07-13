@@ -753,34 +753,41 @@
     const userTypes = Array.from(userTypeCheckboxes).map(cb => cb.value);
 
     const formData = {
-        prefix: document.getElementById('prefix').value,
-        first_name: document.getElementById('firstName').value.trim(),
-        last_name: document.getElementById('lastName').value.trim(),
-        cid: document.getElementById('cid').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        gender: document.querySelector('input[name="gender"]:checked').value,
-        birthdate: document.getElementById('birthdate').value,
-        age_today: calculateAge(document.getElementById('birthdate').value),
-        address_province: address.province,
-        address_amphur: address.amphur,
-        address_tambon: address.tambon,
-        address_moo: document.getElementById('moo').value.trim(),
-        address_no: document.getElementById('addressDetail').value.trim(),
+          user_id: '', // ยังไม่ใช้ ให้ว่าง
+          staff_id_registered: '', // ยังไม่ใช้ ให้ว่าง
+          related_to_mother_type: '',
+          is_high_risk_pregnancy: '',
+          address_latitude: '',
+          address_longtitude: '',
+        
+          prefix: document.getElementById('prefix').value,
+          first_name: document.getElementById('firstName').value.trim(),
+          last_name: document.getElementById('lastName').value.trim(),
+          birthdate: document.getElementById('birthdate').value,
+          age_today: calculateAge(document.getElementById('birthdate').value),
+          cid: document.getElementById('cid').value.trim(),
+          gender: document.querySelector('input[name="gender"]:checked').value,
+          phone: document.getElementById('phone').value.trim(),
+          address_no: document.getElementById('addressDetail').value.trim(),
+          address_moo: document.getElementById('moo').value.trim(),
+          address_tambon: address.tambon,
+          address_amphur: address.amphur,
+          address_province: address.province,
+          consent: document.getElementById('consent').checked ? 'TRUE' : 'FALSE',
+        
+          is_pregnant: userTypes.includes('pregnant') ? 'TRUE' : 'FALSE',
+          is_postpartum: userTypes.includes('postpartum') ? 'TRUE' : 'FALSE',
+          is_general_user: userTypes.includes('general') ? 'TRUE' : 'FALSE',
+        
+          line_registered_at: createdDate,
+          line_user_id: userProfile.userId || '',
+          line_display_name: userProfile.displayName || '',
+          line_picture_url: userProfile.pictureUrl || '',
+        
+          created_date: createdDate,
+          updated_date: updatedDate
+        };
 
-        is_pregnant: userTypes.includes('pregnant') ? 'TRUE' : 'FALSE',
-        is_postpartum: userTypes.includes('postpartum') ? 'TRUE' : 'FALSE',
-        is_general_user: userTypes.includes('general') ? 'TRUE' : 'FALSE',
-
-        consent: document.getElementById('consent').checked ? 'TRUE' : 'FALSE',
-
-        line_user_id: userProfile.userId || '',
-        line_display_name: userProfile.displayName || '',
-        line_picture_url: userProfile.pictureUrl || '',
-        line_registered_at: createdDate,
-
-        created_date: createdDate,
-        updated_date: updatedDate
-    };
 
     try {
         const response = await fetch(APPS_SCRIPT_URL, {
