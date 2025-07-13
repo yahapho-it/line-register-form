@@ -17,102 +17,50 @@
       text-align: center;
       color: #2176bd;
     }
-    form {
+    form, .summary-box, .loading, .popup {
       max-width: 600px;
       margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    label {
-      display: block;
-      margin-top: 12px;
-      font-weight: bold;
-    }
+    label { display: block; margin-top: 12px; font-weight: bold; }
     input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      width: 100%; padding: 8px; margin-top: 4px;
+      border-radius: 6px; border: 1px solid #ccc;
     }
-    .form-section {
-      display: none;
-    }
-    .form-section.active {
-      display: block;
-    }
+    .form-section { display: none; }
+    .form-section.active { display: block; }
     button {
-      margin-top: 20px;
-      padding: 12px;
-      width: 100%;
-      border: none;
-      background-color: #2176bd;
-      color: white;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
+      margin-top: 20px; padding: 12px; width: 100%;
+      border: none; background-color: #2176bd;
+      color: white; border-radius: 6px; font-size: 16px; cursor: pointer;
     }
-    button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-    .checkbox-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .loading, .existing {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .loading-spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #2176bd;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: auto;
-      margin-bottom: 10px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    button:disabled { background-color: #ccc; cursor: not-allowed; }
+    .checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .loading, .popup { text-align: center; margin-top: 20px; display: none; }
+    .loading.active, .popup.active { display: block; }
     .popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); display: flex;
+      justify-content: center; align-items: center;
       z-index: 999;
     }
     .popup-content {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      max-width: 400px;
+      background: white; padding: 30px; border-radius: 12px; max-width: 90%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .summary-box {
+      background: #fff; border-radius: 12px; padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 30px;
     }
   </style>
 </head>
 <body>
   <h1>ลงทะเบียนผู้ใช้งาน</h1>
-  <div class="loading" id="loading">
-    <div class="loading-spinner"></div>
-    <p>กำลังโหลดข้อมูล...</p>
-  </div>
 
-  <div class="existing" id="existing-info" style="display: none;"></div>
+  <div class="loading active" id="loading-box">🔄 กำลังโหลดข้อมูล...</div>
+  <div class="summary-box" id="summary-box" style="display:none;"></div>
 
-  <form id="register-form" style="display: none;">
-    <!-- Form Step 1 -->
+  <form id="register-form" style="display:none;">
+    <!-- Step 1 -->
     <div class="form-section active" id="step-1">
       <label>คำนำหน้า *</label>
       <select name="prefix" required>
@@ -180,17 +128,24 @@
       <label><input type="checkbox" id="consent-box"/> ข้าพเจ้ายินยอมตามเงื่อนไข</label>
       <button type="submit" id="submit-btn" disabled>ลงทะเบียน</button>
     </div>
+    <div class="loading" id="form-loading">⏳ กำลังบันทึกข้อมูล...</div>
   </form>
 
-  <div class="popup" id="popup" style="display: none;">
-    <div class="popup-content" id="popup-content">
-      <p>✅ ลงทะเบียนสำเร็จ</p>
-      <button onclick="document.getElementById('popup').style.display='none'">ปิด</button>
-    </div>
+  <div class="popup" id="popup">
+    <div class="popup-content" id="popup-content"></div>
   </div>
 
   <script>
     let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
+    liff.init({ liffId: "2007700107-rDd1AD1M" }).then(() => {
+      if (!liff.isLoggedIn()) liff.login();
+      else return liff.getProfile();
+    }).then(profile => {
+      lineUserId = profile.userId;
+      lineDisplayName = profile.displayName;
+      linePictureUrl = profile.pictureUrl;
+      checkUser();
+    });
 
     function nextStep() {
       document.getElementById("step-1").classList.remove("active");
@@ -201,84 +156,63 @@
       document.getElementById("submit-btn").disabled = !this.checked;
     });
 
-    // เริ่มต้นโหลด LIFF
-    liff.init({ liffId: "2007700107-rDd1AD1M" }).then(() => {
-      if (!liff.isLoggedIn()) liff.login();
-      else return liff.getProfile();
-    }).then(profile => {
-      lineUserId = profile.userId;
-      lineDisplayName = profile.displayName;
-      linePictureUrl = profile.pictureUrl;
-      fetchData();
-    });
-
-    // ดึงข้อมูลจาก Google Apps Script
-    async function fetchData() {
-      const res = await fetch(`https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`);
-      const data = await res.json();
-      document.getElementById("loading").style.display = "none";
-
-      if (data && data.found) {
-        showExisting(data);
-      } else {
-        document.getElementById("register-form").style.display = "block";
-      }
-    }
-
-    function showExisting(data) {
-      const el = document.getElementById("existing-info");
-      el.innerHTML = `
-        <h3>สวัสดี ${data.first_name}</h3>
-        <p>คุณได้ลงทะเบียนเรียบร้อยแล้ว</p>
-        <p><strong>ชื่อ:</strong> ${data.first_name} ${data.last_name}</p>
-        <p><strong>วันเกิด:</strong> ${data.birthdate}</p>
-        <p><strong>เลขบัตร:</strong> ${data.cid}</p>
-        <p><strong>ที่อยู่:</strong> ${data.address_no} ม.${data.address_moo} ต.${data.address_tambon} อ.${data.address_amphur} จ.${data.address_province}</p>
-        <p><strong>เบอร์:</strong> ${data.phone}</p>
-        <p><strong>สถานะ:</strong> ${[
-          data.is_pregnant === 'TRUE' ? 'หญิงตั้งครรภ์' : '',
-          data.is_postpartum === 'TRUE' ? 'หลังคลอด' : '',
-          data.is_general_user === 'TRUE' ? 'บุคคลทั่วไป' : ''
-        ].filter(Boolean).join(', ')}</p>
-        <p>หากต้องการแก้ไขข้อมูล กรุณาคลิกปุ่มด้านล่าง</p>
-        <button onclick="editExisting(${JSON.stringify(data).replace(/"/g, '&quot;')})">แก้ไขข้อมูล</button>
-      `;
-      el.style.display = "block";
-    }
-
-    function editExisting(data) {
-      const form = document.forms['register-form'];
-      for (let key in data) {
-        const field = form.elements[key];
-        if (field) {
-          if (field.type === 'checkbox') field.checked = data[key] === "TRUE";
-          else field.value = data[key];
+    function checkUser() {
+      fetch(`https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("loading-box").classList.remove("active");
+        if (data && data.first_name) {
+          const box = document.getElementById("summary-box");
+          box.innerHTML = `<h3>สวัสดี ${data.first_name}</h3>
+            <p>คุณได้ลงทะเบียนเรียบร้อยแล้ว</p>
+            <p><strong>ชื่อ:</strong> ${data.first_name} ${data.last_name}</p>
+            <p><strong>วันเกิด:</strong> ${data.birthdate}</p>
+            <p><strong>เลขบัตร:</strong> ${data.cid}</p>
+            <p><strong>ที่อยู่:</strong> ${data.address_no} ม.${data.address_moo} ต.${data.address_tambon} อ.${data.address_amphur} จ.${data.address_province}</p>
+            <p><strong>เบอร์โทร:</strong> ${data.phone}</p>
+            <p><strong>สถานะ:</strong> ${data.is_pregnant === 'TRUE' ? 'หญิงตั้งครรภ์' : ''} ${data.is_postpartum === 'TRUE' ? 'หลังคลอด' : ''}</p>
+            <p>หากต้องการแก้ไขข้อมูล <button onclick="showForm(data)">แก้ไข</button></p>`;
+          box.style.display = 'block';
+        } else {
+          document.getElementById("register-form").style.display = "block";
         }
-      }
-      document.getElementById("existing-info").style.display = "none";
-      document.getElementById("register-form").style.display = "block";
+      });
     }
 
-    document.getElementById("register-form").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append("line_user_id", lineUserId);
-      formData.append("line_display_name", lineDisplayName);
-      formData.append("line_picture_url", linePictureUrl);
-      formData.append("line_registered_at", new Date().toISOString());
+    function showForm(data) {
+      document.getElementById("summary-box").style.display = "none";
+      document.getElementById("register-form").style.display = "block";
+      for (let key in data) {
+        const field = document.querySelector(`[name=${key}]`);
+        if (field) field.value = data[key];
+      }
+    }
 
-      const res = await fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
-        method: "POST",
-        body: formData
+    document.getElementById("register-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      form.append("line_user_id", lineUserId);
+      form.append("line_display_name", lineDisplayName);
+      form.append("line_picture_url", linePictureUrl);
+      form.append("line_registered_at", new Date().toISOString());
+
+      document.getElementById("form-loading").classList.add("active");
+
+      fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
+        method: "POST", body: form
+      }).then(res => res.json())
+      .then(data => {
+        document.getElementById("form-loading").classList.remove("active");
+        const popup = document.getElementById("popup");
+        const content = document.getElementById("popup-content");
+        let msg = `<h2>✅ ลงทะเบียนสำเร็จ</h2><p>ขอบคุณที่ใช้บริการ</p>`;
+        if (data.is_high_risk_pregnancy === true) {
+          msg += `<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>`;
+        }
+        msg += `<button onclick="popup.classList.remove('active')">ปิด</button>`;
+        content.innerHTML = msg;
+        popup.classList.add("active");
       });
-      const result = await res.json();
-      document.getElementById("popup").style.display = "flex";
-      document.getElementById("popup-content").innerHTML = `
-        <p>✅ ระบบลงทะเบียน MCH Yaha Care Center</p>
-        <p>ลงทะเบียนสำเร็จ</p>
-        ${result.is_high_risk_pregnancy === true ? '<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>' : ''}
-        <button onclick="document.getElementById('popup').style.display='none'">ปิด</button>
-      `;
     });
   </script>
 </body>
