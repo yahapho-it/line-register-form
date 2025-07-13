@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ลงทะเบียนผู้ใช้งาน</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body { font-family: 'Noto Sans Thai', sans-serif; padding: 20px; background: #f6fcff; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; }
+    button { background: #4bb3fd; color: white; padding: 10px; width: 100%; margin-top: 20px; border: none; border-radius: 8px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>ลงทะเบียนผู้ใช้งาน</h2>
+  <form id="registerForm">
+    <label>คำนำหน้า</label>
+    <select name="prefix">
+      <option>นาย</option><option>นาง</option><option>นางสาว</option>
+    </select>
+    <label>ชื่อ</label><input type="text" name="first_name" required>
+    <label>นามสกุล</label><input type="text" name="last_name" required>
+    <label>วันเดือนปีเกิด</label><input type="date" name="birthdate" required>
+    <label>เลขบัตรประชาชน</label><input type="text" name="cid" required maxlength="13">
+    <label>เบอร์โทรศัพท์</label><input type="tel" name="phone" required>
+    <label>คุณคือ</label>
+    <select name="group">
+      <option>หญิงตั้งครรภ์</option><option>หญิงหลังคลอด</option><option>บุคคลทั่วไป</option><option>เจ้าหน้าที่</option><option>อื่นๆ</option>
+    </select>
+    <label><input type="checkbox" name="consent" required> ฉันยินยอมให้ระบบเก็บข้อมูลตามวัตถุประสงค์</label>
+    <button type="submit">ลงทะเบียน</button>
+  </form>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "YOUR_LIFF_ID_HERE" });
+      if (!liff.isLoggedIn()) liff.login();
+
+      const profile = await liff.getProfile();
+      document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = Object.fromEntries(new FormData(e.target).entries());
+        formData.line_user_id = profile.userId;
+        formData.line_display_name = profile.displayName;
+        formData.line_picture_url = profile.pictureUrl;
+
+        const res = await fetch("YOUR_GAS_WEBAPP_URL_HERE", {
+          method: "POST",
+          body: JSON.stringify(formData)
+        });
+        const result = await res.json();
+        alert(result.message);
+        if (result.success) liff.closeWindow();
+      });
+    }
+    main();
+  </script>
+</body>
+</html>
