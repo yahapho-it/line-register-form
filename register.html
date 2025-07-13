@@ -138,6 +138,12 @@
   <script>
     let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
 
+    // ซ่อน popup ทุกครั้งที่โหลดหน้าใหม่
+    window.addEventListener("load", () => {
+      const popup = document.getElementById("popup");
+      popup.classList.remove("active");
+    });
+
     // ซ่อน popup ทุกครั้งเมื่อโหลดหน้าใหม่
     document.addEventListener("DOMContentLoaded", function() {
       document.getElementById("popup").classList.remove("active");
