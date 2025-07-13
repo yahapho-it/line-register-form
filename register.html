@@ -157,63 +157,86 @@
     });
 
     function checkUser() {
-      fetch(`https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("loading-box").classList.remove("active");
-        if (data && data.first_name) {
-          const box = document.getElementById("summary-box");
-          box.innerHTML = `<h3>สวัสดี ${data.first_name}</h3>
-            <p>คุณได้ลงทะเบียนเรียบร้อยแล้ว</p>
-            <p><strong>ชื่อ:</strong> ${data.first_name} ${data.last_name}</p>
-            <p><strong>วันเกิด:</strong> ${data.birthdate}</p>
-            <p><strong>เลขบัตร:</strong> ${data.cid}</p>
-            <p><strong>ที่อยู่:</strong> ${data.address_no} ม.${data.address_moo} ต.${data.address_tambon} อ.${data.address_amphur} จ.${data.address_province}</p>
-            <p><strong>เบอร์โทร:</strong> ${data.phone}</p>
-            <p><strong>สถานะ:</strong> ${data.is_pregnant === 'TRUE' ? 'หญิงตั้งครรภ์' : ''} ${data.is_postpartum === 'TRUE' ? 'หลังคลอด' : ''}</p>
-            <p>หากต้องการแก้ไขข้อมูล <button onclick="showForm(data)">แก้ไข</button></p>`;
-          box.style.display = 'block';
-        } else {
-          document.getElementById("register-form").style.display = "block";
-        }
-      });
-    }
+  fetch(`https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("loading-box").classList.remove("active");
+
+      if (data && data.status === "found") {
+        const user = data.data;
+        const box = document.getElementById("summary-box");
+        box.innerHTML = `<h3>สวัสดี ${user.first_name}</h3>
+          <p>คุณได้ลงทะเบียนเรียบร้อยแล้ว</p>
+          <p><strong>ชื่อ:</strong> ${user.first_name} ${user.last_name}</p>
+          <p><strong>วันเกิด:</strong> ${user.birthdate}</p>
+          <p><strong>เลขบัตร:</strong> ${user.cid}</p>
+          <p><strong>ที่อยู่:</strong> ${user.address_no} ม.${user.address_moo} ต.${user.address_tambon} อ.${user.address_amphur} จ.${user.address_province}</p>
+          <p><strong>เบอร์โทร:</strong> ${user.phone}</p>
+          <p><strong>สถานะ:</strong> ${user.is_pregnant === 'TRUE' ? 'หญิงตั้งครรภ์' : ''} ${user.is_postpartum === 'TRUE' ? 'หลังคลอด' : ''}</p>
+          <p>หากต้องการแก้ไขข้อมูล <button onclick='showForm(${JSON.stringify(user)})'>แก้ไข</button></p>`;
+        box.style.display = 'block';
+      } else {
+        document.getElementById("register-form").style.display = "block";
+      }
+    });
+}
+
 
     function showForm(data) {
-      document.getElementById("summary-box").style.display = "none";
-      document.getElementById("register-form").style.display = "block";
-      for (let key in data) {
-        const field = document.querySelector(`[name=${key}]`);
-        if (field) field.value = data[key];
-      }
+  document.getElementById("summary-box").style.display = "none";
+  document.getElementById("register-form").style.display = "block";
+
+  for (let key in data) {
+    const field = document.querySelector(`[name=${key}]`);
+    if (!field) continue;
+
+    if (field.type === "checkbox") {
+      field.checked = data[key] === "TRUE" || data[key] === true;
+    } else if (field.tagName === "SELECT" || field.tagName === "INPUT") {
+      field.value = data[key];
     }
+  }
+}
+
 
     document.getElementById("register-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const form = new FormData(e.target);
-      form.append("line_user_id", lineUserId);
-      form.append("line_display_name", lineDisplayName);
-      form.append("line_picture_url", linePictureUrl);
-      form.append("line_registered_at", new Date().toISOString());
+  e.preventDefault();
+  const formEl = e.target;
+  const form = new FormData(formEl);
 
-      document.getElementById("form-loading").classList.add("active");
+  // เพิ่ม Checkbox ให้แน่ใจว่าอยู่
+  ["is_pregnant", "is_postpartum", "is_general_user"].forEach(name => {
+    form.delete(name); // เคลียร์ก่อน
+    const el = formEl.querySelector(`[name=${name}]`);
+    if (el && el.checked) {
+      form.append(name, "TRUE");
+    }
+  });
 
-      fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
-        method: "POST", body: form
-      }).then(res => res.json())
-      .then(data => {
-        document.getElementById("form-loading").classList.remove("active");
-        const popup = document.getElementById("popup");
-        const content = document.getElementById("popup-content");
-        let msg = `<h2>✅ ลงทะเบียนสำเร็จ</h2><p>ขอบคุณที่ใช้บริการ</p>`;
-        if (data.is_high_risk_pregnancy === true) {
-          msg += `<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>`;
-        }
-        msg += `<button onclick="popup.classList.remove('active')">ปิด</button>`;
-        content.innerHTML = msg;
-        popup.classList.add("active");
-      });
-    });
+  form.append("line_user_id", lineUserId);
+  form.append("line_display_name", lineDisplayName);
+  form.append("line_picture_url", linePictureUrl);
+  form.append("line_registered_at", new Date().toISOString());
+
+  document.getElementById("form-loading").classList.add("active");
+
+  fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
+    method: "POST", body: form
+  }).then(res => res.json())
+  .then(data => {
+    document.getElementById("form-loading").classList.remove("active");
+    const popup = document.getElementById("popup");
+    const content = document.getElementById("popup-content");
+    let msg = `<h2>✅ ลงทะเบียนสำเร็จ</h2><p>ขอบคุณที่ใช้บริการ</p>`;
+    if (data.is_high_risk_pregnancy === true) {
+      msg += `<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>`;
+    }
+    msg += `<button onclick="popup.classList.remove('active')">ปิด</button>`;
+    content.innerHTML = msg;
+    popup.classList.add("active");
+  });
+});
+
   </script>
 </body>
 </html>
