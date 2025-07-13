@@ -137,6 +137,13 @@
 
   <script>
     let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
+
+    // ซ่อน popup ทุกครั้งเมื่อโหลดหน้าใหม่
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("popup").classList.remove("active");
+    });
+
+    
     liff.init({ liffId: "2007700107-rDd1AD1M" }).then(() => {
       if (!liff.isLoggedIn()) liff.login();
       else return liff.getProfile();
@@ -157,6 +164,8 @@
     });
 
     function checkUser() {
+  document.getElementById("popup").classList.remove("active");
+      
   fetch(`https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`)
     .then(res => res.json())
     .then(data => {
