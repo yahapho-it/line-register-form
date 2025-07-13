@@ -735,6 +735,23 @@
             return age;
         }
 
+        function getAddressNames() {
+            const provinceId = document.getElementById('province').value;
+            const amphurId = document.getElementById('amphur').value;
+            const tambonId = document.getElementById('tambon').value;
+        
+            const province = addressData.provinces.find(p => p.id == provinceId)?.name_th || '';
+            const amphur = addressData.amphurs.find(a => a.id == amphurId)?.name_th || '';
+            const tambon = addressData.tambons.find(t => t.id == tambonId)?.name_th || '';
+        
+            return {
+                province,
+                amphur,
+                tambon
+            };
+        }
+
+
         document.getElementById('registrationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
