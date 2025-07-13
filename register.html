@@ -1,165 +1,122 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ลงทะเบียนผู้ใช้งาน</title>
   <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet"/>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    body {
-      font-family: 'Prompt', sans-serif;
-      background-color: #f0f8ff;
-      padding: 20px;
-      color: #333;
-    }
-    form {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block; margin-top: 12px; font-weight: bold;
-    }
-    input, select {
-      width: 100%; padding: 8px; margin-top: 4px;
-      border-radius: 6px; border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 20px; padding: 12px; width: 100%;
-      border: none; background-color: #2176bd;
-      color: white; border-radius: 6px; font-size: 16px; cursor: pointer;
-    }
-    .loading { text-align: center; margin-top: 20px; display: none; }
-    .popup {
-      display: none; text-align: center;
-      margin-top: 20px; background: #dff0d8;
-      padding: 20px; border-radius: 10px;
-    }
-    .popup.active { display: block; }
+    body{font-family:'Prompt';background:#f0f8ff;padding:20px;color:#333}
+    form{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+    label{display:block;margin-top:12px;font-weight:bold}
+    input,select{width:100%;padding:8px;margin-top:4px;border-radius:6px;border:1px solid #ccc}
+    button{margin-top:20px;padding:12px;width:100%;border:none;background:#2176bd;color:#fff;border-radius:6px;cursor:pointer}
+    button:disabled{background:#ccc;cursor:not-allowed}
+    .loading{display:none;text-align:center;margin-top:20px}
+    .popup{display:none;text-align:center;margin:20px auto;padding:20px;background:#dff0d8;border-radius:10px}
+    .popup.active{display:block}
   </style>
 </head>
 <body>
   <h1 style="text-align:center;">ลงทะเบียนผู้ใช้งาน</h1>
 
   <form id="register-form">
-    <!-- ข้อมูลผู้ใช้ -->
     <label>คำนำหน้า *</label>
-    <select name="prefix" required>
-      <option value="">เลือก</option>
-      <option value="น.ส.">น.ส.</option>
-      <option value="นาง">นาง</option>
-      <option value="นาย">นาย</option>
-      <option value="ด.ญ.">ด.ญ.</option>
-      <option value="ด.ช.">ด.ช.</option>
-    </select>
+    <select name="prefix" required><option value="">เลือก</option><option>น.ส.</option><option>นาง</option><option>นาย</option><option>ด.ญ.</option><option>ด.ช.</option><option>อื่นๆ</option></select>
+    <label>ชื่อ *</label><input name="first_name" required/>
+    <label>นามสกุล *</label><input name="last_name" required/>
+    <label>วันเดือนปีเกิด *</label><input type="date" name="birthdate" required/>
+    <label>เลขบัตรประชาชน *</label><input name="cid" maxlength="13" pattern="\d{13}" required/>
+    <label>เพศ</label><select name="gender"><option value="">เลือก</option><option>หญิง</option><option>ชาย</option><option>อื่นๆ</option></select>
+    <label>เบอร์โทร *</label><input name="phone" maxlength="10" pattern="\d{10}" required/>
 
-    <label>ชื่อ *</label>
-    <input name="first_name" required />
-    <label>นามสกุล *</label>
-    <input name="last_name" required />
-    <label>วันเดือนปีเกิด *</label>
-    <input type="date" name="birthdate" required />
-    <label>เลขบัตรประชาชน *</label>
-    <input name="cid" maxlength="13" pattern="\d{13}" required />
-    <label>เพศ</label>
-    <select name="gender">
-      <option value="">เลือก</option>
-      <option value="หญิง">หญิง</option>
-      <option value="ชาย">ชาย</option>
-    </select>
-    <label>เบอร์โทร *</label>
-    <input name="phone" maxlength="10" pattern="\d{10}" required />
-    <label>บ้านเลขที่</label>
-    <input name="address_no" />
-    <label>หมู่</label>
-    <input name="address_moo" />
-    <label>ตำบล</label>
-    <input name="address_tambon" />
-    <label>อำเภอ</label>
-    <input name="address_amphur" />
-    <label>จังหวัด</label>
-    <input name="address_province" />
+    <label>จังหวัด *</label><select name="address_province" id="province" required><option value="">กำลังโหลด...</option></select>
+    <label>อำเภอ *</label><select name="address_amphur" id="amphur" required><option value="">เลือกจังหวัดก่อน</option></select>
+    <label>ตำบล *</label><select name="address_tambon" id="tambon" required><option value="">เลือกอำเภอก่อน</option></select>
+
+    <label>หมู่</label><input name="address_moo"/>
+    <label>บ้านเลขที่/ถนน</label><input name="address_no"/>
 
     <label>สถานะ</label>
-    <label><input type="checkbox" name="is_pregnant" value="TRUE" /> หญิงตั้งครรภ์</label>
-    <label><input type="checkbox" name="is_postpartum" value="TRUE" /> หญิงหลังคลอด</label>
-    <label><input type="checkbox" name="is_general_user" value="TRUE" /> บุคคลทั่วไป</label>
+    <label><input type="checkbox" name="is_pregnant" value="TRUE"> หญิงตั้งครรภ์</label>
+    <label><input type="checkbox" name="is_postpartum" value="TRUE"> หญิงหลังคลอด</label>
+    <label><input type="checkbox" name="is_general_user" value="TRUE"> บุคคลทั่วไป</label>
 
-    <label>ความสัมพันธ์กับแม่</label>
-    <select name="related_to_mother_type">
-      <option value="">เลือก</option>
-      <option value="self">ตนเอง</option>
-      <option value="partner">แฟน</option>
-      <option value="husband">สามี</option>
-      <option value="family">ญาติ</option>
-      <option value="friend">เพื่อน</option>
-      <option value="staff">เจ้าหน้าที่</option>
-      <option value="other">อื่นๆ</option>
-    </select>
+    <label>ความสัมพันธ์</label>
+    <select name="related_to_mother_type"><option value="">เลือก</option><option value="self">ตนเอง</option><option value="partner">แฟน</option><option value="husband">สามี</option><option value="family">ญาติ</option><option value="friend">เพื่อน</option><option value="staff">เจ้าหน้าที่</option><option value="other">อื่น ๆ</option></select>
 
-    <!-- ซ่อนพิกัด -->
-    <input type="hidden" name="address_latitude" id="lat" />
-    <input type="hidden" name="address_longtitude" id="lng" />
+    <div id="step-2" style="display:none">
+      <p><strong>นโยบายความเป็นส่วนตัว</strong><br>
+      ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า … ตามกฎหมาย PDPA</p>
+      <label><input type="checkbox" id="consent-box" name="consent" value="TRUE"/> ข้าพเจ้ายินยอมตามเงื่อนไข</label>
+      <button type="submit" id="submit-btn" disabled>ลงทะเบียน</button>
+    </div>
 
-    <button type="submit">ลงทะเบียน</button>
+    <button type="button" id="next-btn">ถัดไป</button>
     <div class="loading" id="loading">🔄 กำลังบันทึกข้อมูล...</div>
+
+    <input type="hidden" name="address_latitude" id="lat">
+    <input type="hidden" name="address_longtitude" id="lng">
+    <input type="hidden" name="updated_date" id="upd">
   </form>
 
-  <div class="popup" id="popup">✅ ลงทะเบียนเรียบร้อยแล้ว</div>
+  <div class="popup" id="popup">✅ ลงทะเบียนสำเร็จ</div>
 
   <script>
-    let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
+  let lineUserId="",lineDisplayName="",linePictureUrl="";
+  const prov=document.getElementById("province"),amph=document.getElementById("amphur"),tamb=document.getElementById("tambon");
 
-    // Init LIFF
-    liff.init({ liffId: "2007700107-rDd1AD1M" }).then(() => {
-      if (!liff.isLoggedIn()) return liff.login();
-      return liff.getProfile();
-    }).then(profile => {
-      if (!profile) return;
-      lineUserId = profile.userId;
-      lineDisplayName = profile.displayName;
-      linePictureUrl = profile.pictureUrl;
-    });
+  liff.init({liffId:"2007700107-rDd1AD1M"}).then(()=>liff.isLoggedIn()?liff.getProfile():liff.login()).then(p=>{
+    lineUserId=p.userId;lineDisplayName=p.displayName;linePictureUrl=p.pictureUrl;
+  });
 
-    // ดึงพิกัด GPS
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          document.getElementById("lat").value = pos.coords.latitude.toFixed(6);
-          document.getElementById("lng").value = pos.coords.longitude.toFixed(6);
-        },
-        (err) => {
-          console.warn("❌ ไม่สามารถดึงพิกัด: ", err.message);
-        }
-      );
-    }
+  if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{document.getElementById("lat").value=p.coords.latitude;document.getElementById("lng").value=p.coords.longitude;});
 
-    // บันทึกฟอร์ม
-    document.getElementById("register-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const form = new FormData(e.target);
-
-      // เพิ่มข้อมูลจาก LINE
-      form.append("line_user_id", lineUserId);
-      form.append("line_display_name", lineDisplayName);
-      form.append("line_picture_url", linePictureUrl);
-      form.append("line_registered_at", new Date().toISOString());
-
-      document.getElementById("loading").style.display = "block";
-
-      fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
-        method: "POST", body: form
-      })
-      .then(r => r.json())
-      .then(data => {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("popup").classList.add("active");
+  // Load Thailand Geo JSON
+  let geoData=[];
+  fetch("https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json")
+    .then(r=>r.json()).then(data=>{
+      geoData=data;
+      prov.innerHTML="<option value=''>เลือกจังหวัด</option>";
+      [...new Set(data.map(d=>d.province))].forEach(p=>{
+        let o=new Option(p,p);prov.add(o);
       });
     });
+
+  prov.addEventListener("change",()=>{
+    amph.innerHTML="<option value=''>เลือกอำเภอ</option>";
+    tamb.innerHTML="<option value=''>เลือกตำบล</option>";
+    const subs=geoData.filter(d=>d.province===prov.value).map(d=>d.amphur);
+    [...new Set(subs)].forEach(a=>amph.add(new Option(a,a)));
+  });
+
+  amph.addEventListener("change",()=>{
+    tamb.innerHTML="<option value=''>เลือกตำบล</option>";
+    geoData.filter(d=>d.province===prov.value&&d.amphur===amph.value).map(d=>d.tambon).forEach(t=>tamb.add(new Option(t,t)));
+  });
+
+  document.getElementById("next-btn").onclick=()=>{
+    document.getElementById("step-2").style.display="block";
+    document.getElementById("next-btn").style.display="none";
+  };
+  document.getElementById("consent-box").onchange=e=>document.getElementById("submit-btn").disabled=!e.target.checked;
+
+  document.getElementById("register-form").onsubmit=function(e){
+    e.preventDefault();
+    const form=new FormData(this);
+    form.append("line_user_id",lineUserId);
+    form.append("line_display_name",lineDisplayName);
+    form.append("line_picture_url",linePictureUrl);
+    form.append("line_registered_at",new Date().toISOString());
+    document.getElementById("upd").value=new Date().toISOString();
+
+    document.getElementById("loading").style.display="block";
+    fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec",{method:"POST",body:form})
+      .then(r=>r.json()).then(d=>{
+        document.getElementById("loading").style.display="none";
+        document.getElementById("popup").classList.add("active");
+      });
+  };
   </script>
 </body>
 </html>
