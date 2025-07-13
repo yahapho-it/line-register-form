@@ -535,6 +535,7 @@
         function getUserProfile() {
             liff.getProfile().then((profile) => {
                 userProfile = profile;
+                isProfileLoaded = true;
                 console.log('User profile:', profile);
             }).catch((err) => {
                 console.error('Error getting user profile', err);
