@@ -509,17 +509,45 @@ const loadingDiv = document.getElementById("loadingDiv");
 const successMessage = document.getElementById("successMessage");
 
 // เริ่มต้น LIFF
-liff.init({ liffId: "2007700107-rDd1AD1M" })
-  .then(() => liff.getProfile())
-  .then(profile => {
-    userProfile = profile;
-    isProfileLoaded = true;
-    console.log("✅ LINE Profile Loaded:", userProfile);
-    submitBtn.disabled = false;
-  })
-  .catch(err => {
-    alert("ไม่สามารถโหลดข้อมูล LINE ได้: " + err);
-  });
+const LIFF_ID = '2007700107-rDd1AD1M';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec';
+
+        let userProfile = null;
+        let addressData = {
+            provinces: [],
+            amphurs: [],
+            tambons: []
+        };
+
+        // Initialize LIFF
+        window.onload = function() {
+            initializeLiff();
+            loadProvinces();
+            setupEventListeners();
+        };
+
+        function initializeLiff() {
+            liff.init({
+                liffId: LIFF_ID
+            }).then(() => {
+                if (liff.isLoggedIn()) {
+                    getUserProfile();
+                } else {
+                    liff.login();
+                }
+            }).catch((err) => {
+                console.error('LIFF initialization failed', err);
+            });
+        }
+
+        function getUserProfile() {
+            liff.getProfile().then((profile) => {
+                userProfile = profile;
+                console.log('User profile:', profile);
+            }).catch((err) => {
+                console.error('Error getting user profile', err);
+            });
+        }
 
        function setupEventListeners() {
             // Consent checkbox listener
