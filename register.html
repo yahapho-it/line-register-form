@@ -512,11 +512,17 @@
         };
 
         // Initialize LIFF
-        window.onload = function() {
-            initializeLiff();
-            loadProvinces();
-            setupEventListeners();
-        };
+        window.onload = async function() {
+          try {
+            await initializeLiff(); // รอ LIFF พร้อมก่อน
+            loadProvinces();        // จากนั้นค่อยโหลดจังหวัด
+            setupEventListeners();  // และ setup อื่น ๆ
+          } catch (err) {
+            console.error("❌ LIFF Init Failed:", err);
+            alert("ไม่สามารถเริ่มต้นระบบได้ กรุณาลองใหม่หรือติดต่อเจ้าหน้าที่");
+          }
+        }
+
 
         function initializeLiff() {
             liff.init({
