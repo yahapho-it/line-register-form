@@ -17,7 +17,7 @@
       text-align: center;
       color: #2176bd;
     }
-    form, .summary-box, .loading, .popup {
+    form, .summary-box, .loading {
       max-width: 600px;
       margin: auto;
     }
@@ -35,18 +35,8 @@
     }
     button:disabled { background-color: #ccc; cursor: not-allowed; }
     .checkbox-group { display: flex; gap: 10px; flex-wrap: wrap; }
-    .loading, .popup { text-align: center; margin-top: 20px; display: none; }
-    .loading.active, .popup.active { display: block; }
-    .popup {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5); display: flex;
-      justify-content: center; align-items: center;
-      z-index: 999;
-    }
-    .popup-content {
-      background: white; padding: 30px; border-radius: 12px; max-width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
+    .loading { text-align: center; margin-top: 20px; display: none; }
+    .loading.active { display: block; }
     .summary-box {
       background: #fff; border-radius: 12px; padding: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 30px;
@@ -60,7 +50,6 @@
   <div class="summary-box" id="summary-box" style="display:none;"></div>
 
   <form id="register-form" style="display:none;">
-    <!-- Step 1 -->
     <div class="form-section active" id="step-1">
       <label>คำนำหน้า *</label>
       <select name="prefix" required>
@@ -119,11 +108,10 @@
       <button type="button" onclick="nextStep()">ถัดไป</button>
     </div>
 
-    <!-- Step 2 -->
     <div class="form-section" id="step-2">
       <p>
         <strong>นโยบายความเป็นส่วนตัว</strong><br>
-        ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการให้บริการด้านสุขภาพแม่และเด็ก รวมถึงการติดต่อประสานงาน การแจ้งเตือน การให้คำแนะนำ ตลอดจนการประเมินผลการดูแลสุขภาพ โดยข้อมูลจะได้รับการจัดเก็บและคุ้มครองตามกฎหมาย PDPA
+        ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการให้บริการด้านสุขภาพแม่และเด็ก
       </p>
       <label><input type="checkbox" id="consent-box"/> ข้าพเจ้ายินยอมตามเงื่อนไข</label>
       <button type="submit" id="submit-btn" disabled>ลงทะเบียน</button>
@@ -131,28 +119,48 @@
     <div class="loading" id="form-loading">⏳ กำลังบันทึกข้อมูล...</div>
   </form>
 
-  <div class="popup" id="popup">
-    <div class="popup-content" id="popup-content"></div>
-  </div>
-
   <script>
-    window.addEventListener("load", () => {
-      const popup = document.getElementById("popup");
-      const content = document.getElementById("popup-content");
-      popup.classList.remove("active");
-      content.innerHTML = "";
+    let lineUserId = "", lineDisplayName = "", linePictureUrl = "";
+
+    function nextStep() {
+      document.getElementById("step-1").classList.remove("active");
+      document.getElementById("step-2").classList.add("active");
+    }
+
+    document.getElementById("consent-box").addEventListener("change", function() {
+      document.getElementById("submit-btn").disabled = !this.checked;
     });
 
-    function closePopup() {
-      const popup = document.getElementById("popup");
-      const content = document.getElementById("popup-content");
-      popup.classList.remove("active");
-      content.innerHTML = "";
-    }
-  </script>
+    async function init() {
+      await liff.init({ liffId: "1657919462-XkKzkxAl" });
+      if (!liff.isLoggedIn()) liff.login();
+      const profile = await liff.getProfile();
+      lineUserId = profile.userId;
+      lineDisplayName = profile.displayName;
+      linePictureUrl = profile.pictureUrl;
 
-  <script>
-    // เหมือนเดิมทุกส่วน แต่อัปเดตใน fetch POST
+      const url = `https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?line_user_id=${lineUserId}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      document.getElementById("loading-box").style.display = "none";
+
+      if (data && data.cid) {
+        let html = `<p>คุณได้ลงทะเบียนเรียบร้อยแล้ว</p>`;
+        html += `<p><strong>ชื่อ:</strong> ${data.prefix || ''} ${data.first_name || ''} ${data.last_name || ''}</p>`;
+        html += `<p><strong>วันเกิด:</strong> ${data.birthdate || ''}</p>`;
+        html += `<p><strong>เลขบัตร:</strong> ${data.cid || ''}</p>`;
+        html += `<p><strong>ที่อยู่:</strong> ${data.address_tambon || ''} ${data.address_amphur || ''} ${data.address_province || ''}</p>`;
+        html += `<p><strong>เบอร์โทร:</strong> ${data.phone || ''}</p>`;
+        html += `<p><strong>สถานะ:</strong> ${data.is_pregnant ? 'หญิงตั้งครรภ์' : data.is_postpartum ? 'หลังคลอด' : data.is_general_user ? 'บุคคลทั่วไป' : ''}</p>`;
+        document.getElementById("summary-box").innerHTML = html;
+        document.getElementById("summary-box").style.display = "block";
+        document.getElementById("register-form").style.display = "none";
+      } else {
+        document.getElementById("register-form").style.display = "block";
+      }
+    }
+
     document.getElementById("register-form").addEventListener("submit", function(e) {
       e.preventDefault();
       const formEl = e.target;
@@ -178,17 +186,12 @@
       }).then(res => res.json())
       .then(data => {
         document.getElementById("form-loading").classList.remove("active");
-        const popup = document.getElementById("popup");
-        const content = document.getElementById("popup-content");
-        let msg = `<h2>✅ ลงทะเบียนสำเร็จ</h2><p>ขอบคุณที่ใช้บริการ</p>`;
-        if (data.is_high_risk_pregnancy === true) {
-          msg += `<p style="color:red;">ท่านเป็นหญิงตั้งครรภ์เสี่ยง</p>`;
-        }
-        msg += `<button onclick="closePopup()">ปิด</button>`;
-        content.innerHTML = msg;
-        popup.classList.add("active");
+        alert("✅ ลงทะเบียนสำเร็จ ขอบคุณที่ใช้บริการ");
+        location.reload();
       });
     });
+
+    window.addEventListener("load", init);
   </script>
 </body>
 </html>
