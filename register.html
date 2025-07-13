@@ -500,16 +500,8 @@
         </div>
     </div>
 
-   <script>
-let userProfile = {};
-let isProfileLoaded = false;
-const submitBtn = document.getElementById("submitBtn");
-const registrationForm = document.getElementById("registrationForm");
-const loadingDiv = document.getElementById("loadingDiv");
-const successMessage = document.getElementById("successMessage");
-
-// เริ่มต้น LIFF
-const LIFF_ID = '2007700107-rDd1AD1M';
+    <script>
+        const LIFF_ID = '2007700107-rDd1AD1M';
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec';
 
         let userProfile = null;
@@ -549,7 +541,7 @@ const LIFF_ID = '2007700107-rDd1AD1M';
             });
         }
 
-       function setupEventListeners() {
+        function setupEventListeners() {
             // Consent checkbox listener
             document.getElementById('consent').addEventListener('change', function() {
                 const submitBtn = document.getElementById('submitBtn');
@@ -730,18 +722,19 @@ const LIFF_ID = '2007700107-rDd1AD1M';
             errorElement.style.display = 'block';
         }
 
-       
-function calculateAge(birthdate) {
-  const today = new Date();
-  const birth = new Date(birthdate);
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
-}
-
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+        
 function getAddressNames() {
   return {
     tambon: document.getElementById("tambon").value,
