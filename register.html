@@ -1,91 +1,208 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ลงทะเบียนผู้ใช้งาน</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet"/>
   <style>
-    body { background-color: #f4fcff; padding: 2rem; }
-    .form-section { max-width: 600px; margin: auto; }
-    .form-icon { font-size: 2rem; margin-right: 10px; color: #3399ff; }
-    .form-label { font-weight: 600; }
-    .submit-btn:disabled { background-color: #ccc; border-color: #ccc; }
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f0f8ff;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2176bd;
+    }
+
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      background-color: #2176bd;
+      color: white;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .icon {
+      margin-right: 8px;
+      color: #2176bd;
+    }
+
+    .consent {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .consent input {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="form-section">
-    <h4 class="mb-4">
-      <span class="form-icon">📄</span>ลงทะเบียนผู้ใช้งาน
-    </h4>
+  <h1>📝 ลงทะเบียนผู้ใช้งาน</h1>
+  <form id="register-form">
+    <div class="form-group">
+      <label><span class="icon">🙍‍♀️</span>คำนำหน้า</label>
+      <select name="prefix" required>
+        <option value="">-- เลือก --</option>
+        <option value="น.ส.">น.ส.</option>
+        <option value="นาง">นาง</option>
+        <option value="นาย">นาย</option>
+        <option value="ด.ญ.">ด.ญ.</option>
+        <option value="ด.ช.">ด.ช.</option>
+        <option value="อื่นๆ">อื่นๆ</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label><span class="icon">📛</span>ชื่อ</label>
+      <input type="text" name="first_name" required/>
+    </div>
+    <div class="form-group">
+      <label><span class="icon">📛</span>สกุล</label>
+      <input type="text" name="last_name" required/>
+    </div>
+    <div class="form-group">
+      <label><span class="icon">🎂</span>วันเดือนปีเกิด</label>
+      <input type="date" name="birthdate" required/>
+    </div>
+    <div class="form-group">
+      <label><span class="icon">🆔</span>เลขบัตรประชาชน</label>
+      <input type="text" name="cid" pattern="[0-9]{13}" placeholder="กรอก 13 หลัก" required/>
+    </div>
+    <div class="form-group">
+      <label><span class="icon">📞</span>เบอร์โทรศัพท์</label>
+      <input type="tel" name="phone" pattern="[0-9]{10}" placeholder="กรอก 10 หลัก" required/>
+    </div>
+    <div class="form-group">
+      <label><span class="icon">👤</span>สถานะ</label>
+      <select name="group" required>
+        <option value="">-- เลือก --</option>
+        <option value="pregnant">หญิงตั้งครรภ์</option>
+        <option value="postpartum">มารดาหลังคลอด</option>
+        <option value="general">บุคคลทั่วไป</option>
+      </select>
+    </div>
+    <div class="consent">
+      <input type="checkbox" name="consent" id="consent-box"/>
+      <label for="consent-box">ข้าพเจ้ายินยอมให้เก็บข้อมูลตามนโยบายการคุ้มครองข้อมูลส่วนบุคคล</label>
+    </div>
+    <button type="submit" id="submit-btn" disabled>ลงทะเบียน</button>
+  </form>
 
-    <form id="registerForm">
-      <div class="mb-3">
-        <label class="form-label">คำนำหน้า</label>
-        <select class="form-select" name="prefix" required>
-          <option value="">-- เลือก --</option>
-          <option value="น.ส.">น.ส.</option>
-          <option value="นาง">นาง</option>
-          <option value="นาย">นาย</option>
-          <option value="ด.ญ.">ด.ญ.</option>
-          <option value="ด.ช.">ด.ช.</option>
-          <option value="อื่นๆ">อื่นๆ</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">ชื่อ</label>
-        <input type="text" class="form-control" name="first_name" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">นามสกุล</label>
-        <input type="text" class="form-control" name="last_name" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">วันเดือนปีเกิด</label>
-        <input type="date" class="form-control" name="birthdate" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">เลขบัตรประชาชน</label>
-        <input type="text" class="form-control" name="cid" placeholder="เช่น 1234567890123" pattern="\d{13}" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">เบอร์โทรศัพท์</label>
-        <input type="text" class="form-control" name="phone" placeholder="เช่น 0801234567" pattern="\d{10}" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">คุณคือ</label>
-        <select class="form-select" name="group" required>
-          <option value="">-- เลือก --</option>
-          <option value="pregnant">หญิงตั้งครรภ์</option>
-          <option value="postpartum">หญิงหลังคลอด</option>
-          <option value="general">บุคคลทั่วไป</option>
-          <option value="staff">เจ้าหน้าที่</option>
-          <option value="other">อื่น ๆ</option>
-        </select>
-      </div>
-
-      <div class="form-check mb-4">
-        <input class="form-check-input" type="checkbox" id="consentCheckbox">
-        <label class="form-check-label" for="consentCheckbox">
-          ฉันยินยอมให้ระบบเก็บข้อมูลของฉันเพื่อประโยชน์ในการดูแลสุขภาพแม่และเด็ก ตามวัตถุประสงค์ของหน่วยงาน
-        </label>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100 submit-btn" disabled>ลงทะเบียน</button>
-    </form>
-  </div>
-
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#consentCheckbox').change(function () {
-        $('.submit-btn').prop('disabled', !this.checked);
+    const LIFF_ID = "2007700107-rDd1AD1M";
+    const API_URL = "https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec";
+
+    let userProfile = {};
+
+    async function initLIFF() {
+      await liff.init({ liffId: LIFF_ID });
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      } else {
+        const profile = await liff.getProfile();
+        userProfile = {
+          user_id: profile.userId,
+          line_display_name: profile.displayName,
+          line_picture_url: profile.pictureUrl,
+          line_registered_at: new Date().toISOString()
+        };
+      }
+    }
+
+    async function handleSubmit() {
+      const form = document.getElementById("register-form");
+      const formData = new FormData(form);
+
+      if (!formData.get("consent")) {
+        alert("กรุณายินยอมก่อนลงทะเบียน");
+        return;
+      }
+
+      const data = {
+        ...userProfile,
+        prefix: formData.get("prefix"),
+        first_name: formData.get("first_name"),
+        last_name: formData.get("last_name"),
+        birthdate: formData.get("birthdate"),
+        cid: formData.get("cid"),
+        phone: formData.get("phone"),
+        group: formData.get("group"),
+        consent: true,
+        is_pregnant: formData.get("group") === "pregnant",
+        is_postpartum: formData.get("group") === "postpartum",
+        is_general_user: formData.get("group") === "general"
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+        const result = await res.text();
+        alert(result === "updated" ? "อัปเดตข้อมูลเรียบร้อยแล้ว" : "ลงทะเบียนสำเร็จ");
+        liff.closeWindow();
+      } catch (err) {
+        alert("เกิดข้อผิดพลาดในการลงทะเบียน");
+        console.error(err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initLIFF();
+
+      const consentBox = document.getElementById("consent-box");
+      const submitBtn = document.getElementById("submit-btn");
+
+      consentBox.addEventListener("change", () => {
+        submitBtn.disabled = !consentBox.checked;
       });
 
-      $('#registerForm').submit(function (e) {
+      const form = document.getElementById("register-form");
+      form.addEventListener("submit", (e) => {
         e.preventDefault();
-        alert('ส่งข้อมูลสำเร็จ (เดโม)');
-        // TODO: เชื่อมต่อ Google Apps Script ที่นี่
+        handleSubmit();
       });
     });
   </script>
