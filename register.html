@@ -139,7 +139,7 @@
       lineDisplayName = profile.displayName;
       linePictureUrl = profile.pictureUrl;
 
-      const url = `https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?line_user_id=${lineUserId}`;
+      const url = `https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec?action=getUser&line_user_id=${lineUserId}`;
       const res = await fetch(url);
       const data = await res.json();
 
