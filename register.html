@@ -343,159 +343,144 @@
             </div>
 
             <form action="https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec" 
-      method="POST" id="registrationForm">
-                 <div class="form-section">
-                    <h3>📋 ยินยอมการใช้ข้อมูล</h3>
-                    
-                    <div class="consent-text">
-                        <strong>นโยบายความเป็นส่วนตัว</strong><br><br>
-                        ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการให้บริการด้านสุขภาพแม่และเด็ก รวมถึงการติดต่อประสานงาน การแจ้งเตือน การให้คำแนะนำ ตลอดจนการประเมินผลการดูแลสุขภาพ โดยข้อมูลจะได้รับการจัดเก็บและคุ้มครองตามกฎหมาย PDPA
-                    </div>
-                    
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="consent" name="consent" required>
-                        <label for="consent">✅ ข้าพเจ้ายอมรับนโยบายความเป็นส่วนตัวและยินยอมให้ใช้ข้อมูล <span class="required">*</span></label>
-                    </div>
-                    <div class="error-message" id="consentError"></div>
+                  method="POST" id="registrationForm">
+              
+              <!-- ส่วนยินยอม -->
+              <div class="form-section">
+                <h3>📋 ยินยอมการใช้ข้อมูล</h3>
+                <div class="consent-text">
+                  <strong>นโยบายความเป็นส่วนตัว</strong><br><br>
+                  ข้าพเจ้ายินยอมให้แอปพลิเคชัน MCH Yaha Care Center เก็บรวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้า เพื่อวัตถุประสงค์ในการให้บริการด้านสุขภาพแม่และเด็ก รวมถึงการติดต่อประสานงาน การแจ้งเตือน การให้คำแนะนำ ตลอดจนการประเมินผลการดูแลสุขภาพ โดยข้อมูลจะได้รับการจัดเก็บและคุ้มครองตามกฎหมาย PDPA
                 </div>
-                
-                <div class="form-section">
-                    <h3>👤 ข้อมูลส่วนตัว</h3>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="prefix">คำนำหน้า <span class="required">*</span></label>
-                            <select class="form-control" id="prefix" name="prefix" required>
-                                <option value="">เลือกคำนำหน้า</option>
-                                <option value="นาย">นาย</option>
-                                <option value="นาง">นาง</option>
-                                <option value="นางสาว">นางสาว</option>
-                                <option value="เด็กชาย">เด็กชาย</option>
-                                <option value="เด็กหญิง">เด็กหญิง</option>
-                            </select>
-                            <div class="error-message" id="prefixError"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName">ชื่อ <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" required>
-                            <div class="error-message" id="firstNameError"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">นามสกุล <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" required>
-                            <div class="error-message" id="lastNameError"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="cid">เลขบัตรประชาชน <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="cid" name="cid" maxlength="13" required>
-                            <div class="error-message" id="cidError"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">เบอร์โทรศัพท์ <span class="required">*</span></label>
-                            <input type="tel" class="form-control" id="phone" name="phone" maxlength="10" required>
-                            <div class="error-message" id="phoneError"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>เพศ <span class="required">*</span></label>
-                            <div class="radio-group">
-                                <div class="radio-item">
-                                    <input type="radio" id="male" name="gender" value="ชาย" required>
-                                    <label for="male">👨 ชาย</label>
-                                </div>
-                                <div class="radio-item">
-                                    <input type="radio" id="female" name="gender" value="หญิง" required>
-                                    <label for="female">👩 หญิง</label>
-                                </div>
-                            </div>
-                            <div class="error-message" id="genderError"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="birthdate">วันเดือนปีเกิด <span class="required">*</span></label>
-                            <input type="date" class="form-control" id="birthdate" name="birthdate" required>
-                            <div class="error-message" id="birthdateError"></div>
-                        </div>
-                    </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="consent" name="consent" required>
+                  <label for="consent">✅ ข้าพเจ้ายอมรับนโยบายความเป็นส่วนตัวและยินยอมให้ใช้ข้อมูล <span class="required">*</span></label>
                 </div>
-
-                <div class="form-section">
-                    <h3>📍 ที่อยู่</h3>
-                    
-                    <div class="address-fields">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="province">จังหวัด <span class="required">*</span></label>
-                                <select class="form-control" id="province" name="province" required>
-                                    <option value="">เลือกจังหวัด</option>
-                                </select>
-                                <div class="error-message" id="provinceError"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="amphur">อำเภอ <span class="required">*</span></label>
-                                <select class="form-control" id="amphur" name="amphur" required disabled>
-                                    <option value="">เลือกอำเภอ</option>
-                                </select>
-                                <div class="error-message" id="amphurError"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="tambon">ตำบล <span class="required">*</span></label>
-                                <select class="form-control" id="tambon" name="tambon" required disabled>
-                                    <option value="">เลือกตำบล</option>
-                                </select>
-                                <div class="error-message" id="tambonError"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="moo">หมู่ที่</label>
-                                <input type="text" class="form-control" id="moo" name="moo" placeholder="เช่น 1, 2, 3">
-                                <div class="error-message" id="mooError"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="addressDetail">บ้านเลขที่/ถนน <span class="required">*</span></label>
-                            <input type="text" class="form-control" id="addressDetail" name="addressDetail" placeholder="เช่น 123/4 ถนนสุขุมวิท" required>
-                            <div class="error-message" id="addressDetailError"></div>
-                        </div>
-                    </div>
+              </div>
+            
+              <!-- ข้อมูลส่วนตัว -->
+              <div class="form-section">
+                <h3>👤 ข้อมูลส่วนตัว</h3>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="prefix">คำนำหน้า <span class="required">*</span></label>
+                    <select class="form-control" id="prefix" name="prefix" required>
+                      <option value="">เลือกคำนำหน้า</option>
+                      <option value="นาย">นาย</option>
+                      <option value="นาง">นาง</option>
+                      <option value="นางสาว">นางสาว</option>
+                      <option value="เด็กชาย">เด็กชาย</option>
+                      <option value="เด็กหญิง">เด็กหญิง</option>
+                    </select>
+                  </div>
                 </div>
-
-                <div class="form-section">
-                    <h3>👩‍⚕️ ประเภทผู้ใช้งาน</h3>
-                    
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="isPregnant" name="userType" value="pregnant">
-                            <label for="isPregnant">🤰 หญิงตั้งครรภ์</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="isPostpartum" name="userType" value="postpartum">
-                            <label for="isPostpartum">👩‍🍼 มารดาหลังคลอด</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="isGeneral" name="userType" value="general">
-                            <label for="isGeneral">👥 ประชาชนทั่วไป</label>
-                        </div>
-                    </div>
-                    <div class="error-message" id="userTypeError"></div>
+            
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="firstName">ชื่อ <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="firstName" name="first_name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="lastName">นามสกุล <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="lastName" name="last_name" required>
+                  </div>
                 </div>
-
-               
-
-                <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                    🌸 ลงทะเบียน
-                </button>
+            
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="cid">เลขบัตรประชาชน <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="cid" name="cid" maxlength="13" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">เบอร์โทรศัพท์ <span class="required">*</span></label>
+                    <input type="tel" class="form-control" id="phone" name="phone" maxlength="10" required>
+                  </div>
+                </div>
+            
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>เพศ <span class="required">*</span></label>
+                    <div class="radio-group">
+                      <div class="radio-item">
+                        <input type="radio" id="male" name="gender" value="ชาย" required>
+                        <label for="male">👨 ชาย</label>
+                      </div>
+                      <div class="radio-item">
+                        <input type="radio" id="female" name="gender" value="หญิง" required>
+                        <label for="female">👩 หญิง</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="birthdate">วันเดือนปีเกิด <span class="required">*</span></label>
+                    <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+                  </div>
+                </div>
+              </div>
+            
+              <!-- ที่อยู่ -->
+              <div class="form-section">
+                <h3>📍 ที่อยู่</h3>
+                <div class="address-fields">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="province">จังหวัด <span class="required">*</span></label>
+                      <select class="form-control" id="province" name="address_province" required>
+                        <option value="">เลือกจังหวัด</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="amphur">อำเภอ <span class="required">*</span></label>
+                      <select class="form-control" id="amphur" name="address_amphur" required disabled>
+                        <option value="">เลือกอำเภอ</option>
+                      </select>
+                    </div>
+                  </div>
+            
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="tambon">ตำบล <span class="required">*</span></label>
+                      <select class="form-control" id="tambon" name="address_tambon" required disabled>
+                        <option value="">เลือกตำบล</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="moo">หมู่ที่</label>
+                      <input type="text" class="form-control" id="moo" name="address_moo">
+                    </div>
+                  </div>
+            
+                  <div class="form-group">
+                    <label for="addressDetail">บ้านเลขที่/ถนน <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="addressDetail" name="address_no" required>
+                  </div>
+                </div>
+              </div>
+            
+              <!-- ประเภทผู้ใช้ -->
+              <div class="form-section">
+                <h3>👩‍⚕️ ประเภทผู้ใช้งาน</h3>
+                <div class="checkbox-group">
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="isPregnant" name="is_pregnant" value="1">
+                    <label for="isPregnant">🤰 หญิงตั้งครรภ์</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="isPostpartum" name="is_postpartum" value="1">
+                    <label for="isPostpartum">👩‍🍼 มารดาหลังคลอด</label>
+                  </div>
+                  <div class="checkbox-item">
+                    <input type="checkbox" id="isGeneral" name="is_general_user" value="1">
+                    <label for="isGeneral">👥 ประชาชนทั่วไป</label>
+                  </div>
+                </div>
+              </div>
+            
+              <button type="submit" class="submit-btn" id="submitBtn">
+                🌸 ลงทะเบียน
+              </button>
             </form>
+
 
             <div class="loading" id="loadingDiv">
                 <div class="loading-spinner"></div>
