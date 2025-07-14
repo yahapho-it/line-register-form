@@ -854,6 +854,10 @@ registrationForm.addEventListener("submit", async function submitForm(event) {
   loadingDiv.style.display = "block";
 
   try {
+      // ✅ แสดงข้อมูลก่อนส่ง
+  console.log("📦 Data ที่จะส่ง:", data);
+  console.log("📮 ส่งไปที่:", URL_API);
+      
     const response = await fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
       method: "POST",
       mode: "no-cors", 
@@ -864,12 +868,18 @@ registrationForm.addEventListener("submit", async function submitForm(event) {
     });
 
     const result = await response.json();
+
+      // ✅ แสดงผลลัพธ์ที่ได้กลับมา
     console.log("✅ Response from server:", result);
+      
     loadingDiv.style.display = "none";
     successMessage.style.display = "block";
   } catch (error) {
+      // ❌ ดักจับ Error พร้อม log
+      
     console.error("❌ Error:", error);
-    alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
+      alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล: " + error.message);
+      
     registrationForm.style.display = "block";
     loadingDiv.style.display = "none";
   }
