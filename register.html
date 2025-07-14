@@ -738,20 +738,20 @@ function validateForm() {
   }
 
   const userType = document.querySelectorAll('#isPregnant:checked, #isPostpartum:checked, #isGeneral:checked');
-if (userType.length === 0) {
-  showError('userTypeError', 'กรุณาเลือกประเภทผู้ใช้งานอย่างน้อย 1 ประเภท');
-  isValid = false;
-}
-
-
-  const consent = document.getElementById('consent').checked;
-  if (!consent) {
-    showError('consentError', 'กรุณายินยอมการใช้ข้อมูลส่วนบุคคล');
-    isValid = false;
-  }
-
-  return isValid;
-}
+    if (userType.length === 0) {
+      showError('userTypeError', 'กรุณาเลือกประเภทผู้ใช้งานอย่างน้อย 1 ประเภท');
+      isValid = false;
+    }
+    
+    
+      const consent = document.getElementById('consent').checked;
+      if (!consent) {
+        showError('consentError', 'กรุณายินยอมการใช้ข้อมูลส่วนบุคคล');
+        isValid = false;
+      }
+    
+      return isValid;
+    }
 
     function showError(elementId, message) {
       const errorElement = document.getElementById(elementId);
