@@ -789,6 +789,10 @@ if (userType.length === 0) {
     }
     
     function collectFormData() {
+      const provinceSelect = document.getElementById("province");
+      const amphurSelect = document.getElementById("amphur");
+      const tambonSelect = document.getElementById("tambon");
+        
       return {
         // 🧍‍♀️ ข้อมูลส่วนตัว
         prefix: document.getElementById("prefix").value,
@@ -802,9 +806,9 @@ if (userType.length === 0) {
         // 📍 ที่อยู่
         address_no: document.getElementById("addressDetail").value,
         address_moo: document.getElementById("moo").value,
-        address_tambon: document.getElementById("tambon").value,
-        address_amphur: document.getElementById("amphur").value,
-        address_province: document.getElementById("province").value,
+        address_province: provinceSelect.options[provinceSelect.selectedIndex]?.text || "",
+        address_amphur: amphurSelect.options[amphurSelect.selectedIndex]?.text || "",
+        address_tambon: tambonSelect.options[tambonSelect.selectedIndex]?.text || "",
     
         // ✅ ประเภทผู้ใช้งาน (เช็คทั้ง true / false)
         is_pregnant: document.getElementById("isPregnant").checked ? "TRUE" : "FALSE",
