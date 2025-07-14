@@ -753,74 +753,74 @@ if (userType.length === 0) {
   return isValid;
 }
 
-function showError(elementId, message) {
-  const errorElement = document.getElementById(elementId);
-  errorElement.textContent = message;
-  errorElement.style.display = 'block';
-}
-
-function calculateAge(birthDate) {
-  const today = new Date();
-  const birth = new Date(birthDate);
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-
-  return age;
-}
-
-function getAddressNames() {
-  return {
-    tambon: document.getElementById("tambon").value,
-    amphur: document.getElementById("amphur").value,
-    province: document.getElementById("province").value
-  };
-}
-
-function getSelectedUserTypes() {
-  return {
-    is_pregnant: document.getElementById("isPregnant").checked,
-    is_postpartum: document.getElementById("isPostpartum").checked,
-    is_general_user: document.getElementById("isGeneral").checked
-  };
-}
-
-function collectFormData() {
-  return {
-    prefix: document.getElementById("prefix").value,
-    first_name: document.getElementById("firstName").value,
-    last_name: document.getElementById("lastName").value,
-    birthdate: document.getElementById("birthdate").value,
-    cid: document.getElementById("cid").value,
-    gender: document.querySelector("input[name='gender']:checked").value,
-    phone: document.getElementById("phone").value,
-    address_no: document.getElementById("addressDetail").value,
-    address_moo: document.getElementById("moo").value,
-    address_tambon: document.getElementById("tambon").value,
-    address_amphur: document.getElementById("amphur").value,
-    address_province: document.getElementById("province").value,
-    is_pregnant: document.getElementById("isPregnant").checked ? "TRUE" : "",
-    is_postpartum: document.getElementById("isPostpartum").checked ? "TRUE" : "",
-    is_general_user: document.getElementById("isGeneral").checked ? "TRUE" : "",
-    consent: document.getElementById("consent").checked ? "TRUE" : "",
-    user_id: "",
-    staff_id_registered: "",
-    related_to_mother_type: "",
-    line_registered_at: new Date().toISOString(),
-    created_date: new Date().toISOString(),
-    updated_date: new Date().toISOString(),
-    address_latitude: "",
-    address_longtitude: "",
-    age_today: calculateAge(document.getElementById("birthdate").value),
-    line_user_id: userProfile?.userId || "",
-    line_display_name: userProfile?.displayName || "",
-    line_picture_url: userProfile?.pictureUrl || "",
-    is_high_risk_pregnancy: ""
-  };
-}
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+    
+    function calculateAge(birthDate) {
+      const today = new Date();
+      const birth = new Date(birthDate);
+      let age = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+    
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+      }
+    
+      return age;
+    }
+    
+    function getAddressNames() {
+      return {
+        tambon: document.getElementById("tambon").value,
+        amphur: document.getElementById("amphur").value,
+        province: document.getElementById("province").value
+      };
+    }
+    
+    function getSelectedUserTypes() {
+      return {
+        is_pregnant: document.getElementById("isPregnant").checked,
+        is_postpartum: document.getElementById("isPostpartum").checked,
+        is_general_user: document.getElementById("isGeneral").checked
+      };
+    }
+    
+    function collectFormData() {
+      return {
+        prefix: document.getElementById("prefix").value,
+        first_name: document.getElementById("firstName").value,
+        last_name: document.getElementById("lastName").value,
+        birthdate: document.getElementById("birthdate").value,
+        cid: document.getElementById("cid").value,
+        gender: document.querySelector("input[name='gender']:checked").value,
+        phone: document.getElementById("phone").value,
+        address_no: document.getElementById("addressDetail").value,
+        address_moo: document.getElementById("moo").value,
+        address_tambon: document.getElementById("tambon").value,
+        address_amphur: document.getElementById("amphur").value,
+        address_province: document.getElementById("province").value,
+        is_pregnant: document.getElementById("isPregnant").checked ? "TRUE" : "",
+        is_postpartum: document.getElementById("isPostpartum").checked ? "TRUE" : "",
+        is_general_user: document.getElementById("isGeneral").checked ? "TRUE" : "",
+        consent: document.getElementById("consent").checked ? "TRUE" : "",
+        user_id: "",
+        staff_id_registered: "",
+        related_to_mother_type: "",
+        line_registered_at: new Date().toISOString(),
+        created_date: new Date().toISOString(),
+        updated_date: new Date().toISOString(),
+        address_latitude: "",
+        address_longtitude: "",
+        age_today: calculateAge(document.getElementById("birthdate").value),
+        line_user_id: userProfile?.userId || "",
+        line_display_name: userProfile?.displayName || "",
+        line_picture_url: userProfile?.pictureUrl || "",
+        is_high_risk_pregnancy: ""
+      };
+    }
   
     </script>
 
