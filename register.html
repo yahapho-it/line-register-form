@@ -515,6 +515,46 @@
             tambons: []
         };
 
+         const registrationForm = document.getElementById("registrationForm");
+          const submitBtn = document.getElementById("submitBtn");
+          const loadingDiv = document.getElementById("loadingDiv");
+          const successMessage = document.getElementById("successMessage");
+        
+          registrationForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+        
+            const data = collectFormData(); // 👈 ดึงข้อมูลจากฟอร์ม
+        
+            registrationForm.style.display = "none";
+            loadingDiv.style.display = "block";
+        
+            try {
+              const response = await fetch("https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                  "Content-Type": "application/json"
+                }
+              });
+        
+              const result = await response.json();
+              console.log("✅ Response:", result);
+        
+              if (result.status === "success") {
+                successMessage.style.display = "block";
+              } else {
+                alert("❌ เกิดข้อผิดพลาด: " + (result.message || "ไม่สามารถบันทึกข้อมูลได้"));
+                registrationForm.style.display = "block";
+              }
+            } catch (error) {
+              console.error("❌ Error:", error);
+              alert("❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล: " + error.message);
+              registrationForm.style.display = "block";
+            } finally {
+              loadingDiv.style.display = "none";
+            }
+          });
+
         // Initialize LIFF
         window.onload = function() {
             initializeLiff();
@@ -833,6 +873,62 @@ registrationForm.addEventListener("submit", async function submitForm(event) {
     loadingDiv.style.display = "none";
   }
 });
+
+ function collectFormData() {
+      const data = {
+        // 🧍‍♀️ ข้อมูลส่วนตัว
+        prefix: document.getElementById("prefix").value,
+        first_name: document.getElementById("firstName").value,
+        last_name: document.getElementById("lastName").value,
+        birthdate: document.getElementById("birthdate").value,
+        cid: document.getElementById("cid").value,
+        gender: document.querySelector('input[name="gender"]:checked')?.value || "",
+        phone: document.getElementById("phone").value,
+    
+        // 📍 ที่อยู่
+        address_no: document.getElementById("addressDetail").value,
+        address_moo: document.getElementById("moo").value,
+        address_tambon: document.getElementById("tambon").value,
+        address_amphur: document.getElementById("amphur").value,
+        address_province: document.getElementById("province").value,
+    
+        // ✅ ประเภทผู้ใช้งาน
+        is_pregnant: document.getElementById("isPregnant").checked ? "TRUE" : "",
+        is_postpartum: document.getElementById("isPostpartum").checked ? "TRUE" : "",
+        is_general_user: document.getElementById("isGeneral").checked ? "TRUE" : "",
+    
+        // 📋 ยินยอม
+        consent: document.getElementById("consent").checked ? "TRUE" : "",
+    
+        // 🔖 ฟิลด์เสริม / hidden field
+        user_id: "",
+        staff_id_registered: "",
+        related_to_mother_type: "",
+    
+        // 📅 เวลาบันทึก
+        line_registered_at: new Date().toISOString(),
+        created_date: new Date().toISOString(),
+        updated_date: new Date().toISOString(),
+    
+        // 📍 พิกัด (ยังไม่เปิดใช้)
+        address_latitude: "",
+        address_longtitude: "",
+    
+        // 📆 คำนวณอายุ
+        age_today: calculateAge(document.getElementById("birthdate").value),
+    
+        // 🪪 ข้อมูลจาก LIFF
+        line_user_id: userProfile?.userId || "",
+        line_display_name: userProfile?.displayName || "",
+        line_picture_url: userProfile?.pictureUrl || "",
+    
+        // 🛑 ครรภ์เสี่ยง (ให้ admin กรอกภายหลัง)
+        is_high_risk_pregnancy: "",
+      };
+    
+      return data;
+}
+
 </script>
 
 </body>
