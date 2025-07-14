@@ -737,11 +737,12 @@ function validateForm() {
     isValid = false;
   }
 
-  const userType = document.querySelectorAll('input[name="userType"]:checked');
-  if (userType.length === 0) {
-    showError('userTypeError', 'กรุณาเลือกประเภทผู้ใช้งานอย่างน้อย 1 ประเภท');
-    isValid = false;
-  }
+  const userType = document.querySelectorAll('#isPregnant:checked, #isPostpartum:checked, #isGeneral:checked');
+if (userType.length === 0) {
+  showError('userTypeError', 'กรุณาเลือกประเภทผู้ใช้งานอย่างน้อย 1 ประเภท');
+  isValid = false;
+}
+
 
   const consent = document.getElementById('consent').checked;
   if (!consent) {
