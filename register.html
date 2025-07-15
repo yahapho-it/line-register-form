@@ -805,6 +805,7 @@ async function checkCIDInDatabase() {
 
   if (cid.length !== 13) {
     cidHint.textContent = "กรุณากรอกเลขบัตรประชาชน 13 หลัก";
+    cidHint.style.display = 'block';
     return;
   }
 
