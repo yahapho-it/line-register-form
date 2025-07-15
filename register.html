@@ -512,23 +512,23 @@
 
     <script>
     const LIFF_ID = '2007700107-rDd1AD1M';
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbznTaneNaGDoTwT9Xsgq9XCZDOSspbAbuqeLvkC1teurkY2PwYbk27evsmkULQWONE/exec';
 
-let userProfile = null;
-let isProfileLoaded = false; 
-let addressData = {
-    provinces: [],
-    amphurs: [],
-    tambons: []
-};
-
-const registrationForm = document.getElementById("registrationForm");
-const submitBtn = document.getElementById("submitBtn");
-const loadingDiv = document.getElementById("loadingDiv");
-const successMessage = document.getElementById("successMessage");
-
-registrationForm.addEventListener("submit", async function (event) {
-  event.preventDefault();
+    let userProfile = null;
+    let isProfileLoaded = false; 
+    let addressData = {
+        provinces: [],
+        amphurs: [],
+        tambons: []
+    };
+    
+    const registrationForm = document.getElementById("registrationForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const loadingDiv = document.getElementById("loadingDiv");
+    const successMessage = document.getElementById("successMessage");
+    
+    registrationForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
 
   const data = collectFormData();
   if (!validateForm()) return;
@@ -593,6 +593,13 @@ function getUserProfile() {
 }
 
 function setupEventListeners() {
+ document.addEventListener('DOMContentLoaded', function () {
+    const cidInput = document.getElementById('cid');
+    if (cidInput) {
+      cidInput.addEventListener('blur', checkCIDInDatabase);
+    }
+  });
+    
   document.getElementById('consent').addEventListener('change', function() {
     submitBtn.disabled = !this.checked;
   });
