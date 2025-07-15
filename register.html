@@ -814,7 +814,9 @@ async function checkCIDInDatabase() {
     const result = await response.json();
 
     if (result.found) {
-      cidHint.textContent = "✅ มีข้อมูลในระบบแล้ว (กรอกอัตโนมัติ)";
+      cidHint.textContent = "✅ มีข้อมูลในระบบแล้ว ";
+      cidHint.style.display = 'block';
+        
       fillFormWithData(result.data);
     } else {
       cidHint.textContent = "❌ ไม่พบข้อมูลในระบบ";
